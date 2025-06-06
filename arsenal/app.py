@@ -2,9 +2,11 @@ import argparse
 import json
 import os
 import fcntl
+import asyncio
 import termios
 import re
 import time
+import curses
 from curses import wrapper
 
 # arsenal
@@ -13,6 +15,7 @@ from .modules import config
 from .modules import cheat
 from .modules import check
 from .modules import gui as arsenal_gui
+from .modules import notion_sync
 
 
 class App:
@@ -30,6 +33,7 @@ class App:
         >set GLOBALVAR1=<value>
         >show
         >clear
+        >reload
 
         (cmd starting with '>' are internals cmd)
         '''
@@ -49,6 +53,8 @@ class App:
         group_out.add_argument('-t', '--tmux', action='store_true', help='Send command to tmux panel')
         group_out.add_argument('-c', '--check', action='store_true', help='Check the existing commands')
         group_out.add_argument('-f', '--prefix', action='store_true', help='command prefix')
+        group_out.add_argument('-s', '--sync', action='store_true', help='Synchronize with notion')
+        group_out.add_argument('--token', type=str, help='Notion API token')
         group_out.add_argument('--no-tags', action='store_false', help='Whether or not to show the'
                                                                        ' tags when drawing the cheats')
         parser.add_argument('-V', '--version', action='version', version='%(prog)s (version {})'.format(__version__))
@@ -69,7 +75,14 @@ class App:
 
     def start(self, args, cheatsheets):
         arsenal_gui.Gui.with_tags = args.no_tags
-
+        # OPT: Synchronize Notion
+        if args.sync:
+            if not args.token:
+                print("[!] Token API Notion non défini")
+                exit()
+            else:
+                asyncio.run(notion_sync.sync_notion_main(token=args.token))
+                exit()
         # create gui object
         gui = arsenal_gui.Gui()
         while True:
@@ -136,6 +149,7 @@ class App:
                 os.system(cmd.cmdline)
                 break
 
+
             elif args.tmux:
                 try:
                     import libtmux
@@ -201,8 +215,8 @@ def main():
     try:
         App().run()
     except KeyboardInterrupt:
-        exit(0)
+        pass
 
 
 if __name__ == "__main__":
-    wrapper(main()) 
+    wrapper(main)

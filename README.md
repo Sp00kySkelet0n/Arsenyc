@@ -1,12 +1,12 @@
-# Arsenal
+# Arsenyc
 
 ![](img/logo.png)
 
-Arsenal is just a quick inventory, reminder and launcher for pentest commands.
-<br>This project written by pentesters for pentesters simplify the use of all the hard-to-remember commands
+Arsenyc is fork of the tool Arsenal by Orange but with added support of Notion synchronization so notion pages are converted to cheatsheets
 
-![](img/arsenal.gif)
+![](img/arsenyc.gif)
 
+## Original Arsenal README
 In arsenal you can search for a command, select one and it's prefilled directly in your terminal. This functionality is independent of the shell used. Indeed arsenal emulates real user input (with TTY arguments and IOCTL) so arsenal works with all shells and your commands will be in the history.
 
 You have to enter arguments if needed, but arsenal supports global variables. <br>

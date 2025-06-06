@@ -3,3 +3,8 @@ docutils
 pyperclip
 pyyaml
 pyfzf
+aiohttp
+aiofiles
+mistletoe
+notion_client
+notion-to-md-py

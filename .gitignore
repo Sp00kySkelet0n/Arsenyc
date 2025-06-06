@@ -12,3 +12,4 @@ build/
 dist/
 Pipfile.lock
 Pipfile
+.DS_Store
