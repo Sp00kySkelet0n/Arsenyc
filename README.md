@@ -2,7 +2,7 @@
 
 ![](img/logo.png)
 
-Arsenyc is fork of the tool Arsenal by Orange but with added support of Notion synchronization so notion pages are converted to cheatsheets
+Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion synchronization so notion pages are converted to cheatsheets
 
 ![](img/arsenyc.gif)
 
