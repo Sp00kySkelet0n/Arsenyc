@@ -6,6 +6,23 @@ Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion
 
 ![](img/arsenyc.gif)
 
+## Usage
+- Generate notion integration token
+
+- On notion add checkbox named "Arsenyc" to each page you want synchronized
+
+  ![](img/notion_sync.png)
+
+- Launch sync with notion command
+  ```
+  python3.13 -m arsenal --sync --token [NOTION_INTEGRATION_TOKEN]
+  ```
+
+- Add alias for simplicity 
+  ```
+  alias sync2notion="python3.13 -m arsenal --sync --token [NOTION_INTEGRATION_TOKEN]"
+  ```
+
 ## Original Arsenal README
 In arsenal you can search for a command, select one and it's prefilled directly in your terminal. This functionality is independent of the shell used. Indeed arsenal emulates real user input (with TTY arguments and IOCTL) so arsenal works with all shells and your commands will be in the history.
 

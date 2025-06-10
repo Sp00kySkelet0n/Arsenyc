@@ -6,5 +6,5 @@ pyfzf
 aiohttp
 aiofiles
 mistletoe
-notion_client
+notion-client
 notion-to-md-py
