@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 import requests
 import aiofiles
+import os
 from mistletoe import Document
 from mistletoe.block_token import CodeFence, Heading
 from notion_client import AsyncClient
@@ -55,6 +56,7 @@ async def write_synced_file(auth_token,page_id,title_name):
 """)
     all_blocks_str=''.join(all_blocks)
     # Write to a file
+    os.makedirs(base_path, exist_ok=True)
     async with aiofiles.open(f"{base_path}/{page_id}.md", "w") as f:
         await f.write(all_blocks_str)
 
