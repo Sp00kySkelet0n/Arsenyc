@@ -8,6 +8,7 @@ import re
 import time
 import curses
 from curses import wrapper
+from pathlib import Path
 
 # arsenal
 from . import __version__
@@ -16,7 +17,7 @@ from .modules import cheat
 from .modules import check
 from .modules import gui as arsenal_gui
 from .modules import notion_sync
-
+from .modules import obsidian_sync
 
 class App:
 
@@ -53,8 +54,10 @@ class App:
         group_out.add_argument('-t', '--tmux', action='store_true', help='Send command to tmux panel')
         group_out.add_argument('-c', '--check', action='store_true', help='Check the existing commands')
         group_out.add_argument('-f', '--prefix', action='store_true', help='command prefix')
-        group_out.add_argument('-s', '--sync', action='store_true', help='Synchronize with notion')
+        group_out.add_argument('-st', '--sync-notion', action='store_true', help='Synchronize with notion')
+        group_out.add_argument('-so', '--sync-obsidian', action='store_true', help='Synchronize with Obsidian Vault (local)')
         group_out.add_argument('--token', type=str, help='Notion API token')
+        group_out.add_argument('--vault', type=str, help='Obsidian Vault path')
         group_out.add_argument('--no-tags', action='store_false', help='Whether or not to show the'
                                                                        ' tags when drawing the cheats')
         parser.add_argument('-V', '--version', action='version', version='%(prog)s (version {})'.format(__version__))
@@ -75,13 +78,26 @@ class App:
 
     def start(self, args, cheatsheets):
         arsenal_gui.Gui.with_tags = args.no_tags
-        # OPT: Synchronize Notion
-        if args.sync:
-            if not args.token:
-                print("[!] Token API Notion non défini")
-                exit()
+        # OPT: Synchronize Notion OR Obsidian
+        if args.sync_notion:
+            if args.sync_notion:
+                if not args.token:
+                    print("[!] Token API Notion non défini")
+                    exit()
+                else:
+                    asyncio.run(notion_sync.sync_notion_main(token=args.token))
+                    exit()
+        elif args.sync_obsidian:
+            if args.vault:
+                vault_path = Path(args.vault)
+                if not vault_path.is_dir():
+                    print(f"[!] Obsidian vault path '{args.vault}' is not a directory")
+                    exit()
+                else:
+                    asyncio.run(obsidian_sync.build_obsidian_file_for_tag(vault_path))
+                    exit()
             else:
-                asyncio.run(notion_sync.sync_notion_main(token=args.token))
+                print("[!] Obsidian vault path non défini")
                 exit()
         # create gui object
         gui = arsenal_gui.Gui()

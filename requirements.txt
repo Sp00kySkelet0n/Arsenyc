@@ -9,3 +9,4 @@ aiofiles
 mistletoe
 notion-client
 notion-to-md-py
+obsidiantools

@@ -1,88 +1,68 @@
-import asyncio
-import aiohttp
-import requests
-import aiofiles
 import os
-from mistletoe import Document
-from mistletoe.block_token import CodeFence, Heading
+from typing import List, Tuple, Optional
+from os.path import join
 from notion_client import AsyncClient
 from notion_to_md import NotionToMarkdownAsync
-from os.path import dirname, abspath, expanduser, join
-from . import cheat
-from . import config
+from mistletoe import Document
 from .config import BASEPATH
-base_path = join(BASEPATH, "my_cheats")
+from .common_sync import (
+    write_text_file,
+    build_markdown_from_blocks,
+    extract_heading_code_blocks_mistletoe,
+)
 
+BASE_OUTPUT = join(BASEPATH, "my_cheats")
 
-async def write_synced_file(auth_token,page_id,title_name):
-
+async def write_synced_file_notion(auth_token: str, page_id: str, title_name: str) -> None:
+    """
+    Fetch a Notion page, convert to Markdown, pull fenced code blocks grouped under the last heading,
+    drop Python-style comment lines, then write to BASE_OUTPUT/{page_id}.md
+    """
     notion = AsyncClient(auth=auth_token)
-
     n2m = NotionToMarkdownAsync(notion)
 
-    # Export a page as a markdown blocks
     md_blocks = await n2m.page_to_markdown(page_id)
+    md_str = n2m.to_markdown_string(md_blocks).get("parent") or ""
 
-    # Convert markdown blocks to string
-    md_str = n2m.to_markdown_string(md_blocks).get('parent')
-    # Regex to find all blocks of code with a title right above it
     doc = Document(md_str)
+    blocks: List[Tuple[str, Optional[str], str]] = extract_heading_code_blocks_mistletoe(doc)
 
-    code_blocks = []
-    last_heading = None
+    out_text = build_markdown_from_blocks(title_name, blocks, header_tag="% notion")
+    out_path = join(BASE_OUTPUT, f"{page_id}.md")
+    await write_text_file(out_path, out_text)
 
-    for token in doc.children:
-        if isinstance(token, Heading):
-            # Extract plain text from heading
-            last_heading = ''.join(child.content for child in token.children)
-        elif isinstance(token, CodeFence):
-            code_blocks.append({
-            'title': last_heading,
-            'language': token.language,
-            'code': token.children[0].content
-            })
-    all_blocks=[]
-    all_blocks.append(f"# {title_name}")
-    all_blocks.append(f"% notion")
-    for block in code_blocks:
-        code_block = block['code']
-        code_without_comments = [line for line in code_block.splitlines() if not line.strip().startswith('#')]
-        code_without_comments_str = '\n'.join(code_without_comments)
-        all_blocks.append(f"""
-## {block['title']}
-```
-{code_without_comments_str}
-```
-""")
-    all_blocks_str=''.join(all_blocks)
-    # Write to a file
-    os.makedirs(base_path, exist_ok=True)
-    async with aiofiles.open(f"{base_path}/{page_id}.md", "w") as f:
-        await f.write(all_blocks_str)
+async def sync_notion_main(auth_token: str, include_tag_property: str = "Arsenyc") -> None:
+    """
+    Scans Notion for pages and writes one cheatsheet per page if the checkbox property is true.
+    Matches your previous "Arsenyc" property behavior.
+    """
+    import aiohttp
 
-
-async def sync_notion_main(token):
     url = "https://api.notion.com/v1/search"
     headers = {
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {auth_token}",
         "Notion-Version": "2022-06-28",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
     data = {
-        "filter": {
-            "value": "page",
-            "property": "object"
-        },
-        "page_size": 100
+        "filter": {"value": "page", "property": "object"},
+        "page_size": 100,
     }
 
     async with aiohttp.ClientSession() as session:
-        async with session.post(url, headers=headers, json=data) as response:
-            pages = await response.json()
-            for result in pages["results"]:
-                is_synced = result['properties']['Arsenyc']['checkbox']
-                if is_synced:
-                    project_id = result['id']
-                    project_title = result['properties']['Name']['title'][0]['plain_text']
-                    await write_synced_file(token,project_id,project_title)
-                    print(f"[*] Page { project_title } synced")
+        async with session.post(url, headers=headers, json=data) as resp:
+            resp.raise_for_status()
+            payload = await resp.json()
+
+    os.makedirs(BASE_OUTPUT, exist_ok=True)
+
+    for result in payload.get("results", []):
+        props = result.get("properties", {})
+        # defensive checks
+        if include_tag_property in props and props[include_tag_property].get("checkbox"):
+            page_id = result["id"]
+            name_prop = props.get("Name", {})
+            title_list = name_prop.get("title", [])
+            page_title = title_list[0]["plain_text"] if title_list else "Untitled"
+            await write_synced_file_notion(auth_token, page_id, page_title)
+            print(f"[*] Notion page '{page_title}' synced")

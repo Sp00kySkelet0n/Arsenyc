@@ -2,11 +2,11 @@
 
 ![](img/logo.png)
 
-Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion synchronization so notion pages are converted to cheatsheets
+Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion and Obsidian synchronization
 
 ![](img/arsenyc.gif)
 
-## Usage
+## Notion sync Usage
 - Generate notion integration token
 
 - On notion add checkbox named "Arsenyc" to each page you want synchronized
@@ -15,12 +15,27 @@ Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion
 
 - Launch sync with notion command
   ```
-  python3.13 -m arsenal --sync --token [NOTION_INTEGRATION_TOKEN]
+  python3.13 -m arsenal --sync-notion --token [NOTION_INTEGRATION_TOKEN]
   ```
 
 - Add alias for simplicity 
   ```
-  alias sync2notion="python3.13 -m arsenal --sync --token [NOTION_INTEGRATION_TOKEN]"
+  alias sync2notion="python3.13 -m arsenal --sync-notion --token [NOTION_INTEGRATION_TOKEN]"
+  ```
+
+## Obsidian sync Usage
+- Generate obsidian integration token (if using Obsidian)
+
+- On Obsidian add "arsenyc" tag
+
+- Launch sync with notion command
+  ```
+  python3.13 -m arsenal --sync-obsidian --vault ~/Desktop/Perso/Obsidian
+  ```
+
+- Add alias for simplicity 
+  ```
+  alias sync2notion="python3.13 -m arsenal --sync-obsidian --vault ~/Desktop/Perso/Obsidian"
   ```
 
 ## Original Arsenal README
