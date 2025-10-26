@@ -4,6 +4,7 @@
 
 Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion and Obsidian synchronization
 
+(Using here basalt a Obsidian TUI client)
 ![](img/arsenyc.gif)
 
 ## Notion sync Usage
