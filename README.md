@@ -25,7 +25,6 @@ Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion
   ```
 
 ## Obsidian sync Usage
-- Generate obsidian integration token (if using Obsidian)
 
 - On Obsidian add "arsenyc" tag
 
