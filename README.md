@@ -26,7 +26,7 @@ Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion
 
 ## Obsidian sync Usage
 
-- On Obsidian add "arsenyc" tag
+- On Obsidian add "arsenyc" tag to note(s) you want to synchronize
 
 - Launch sync with notion command
   ```
@@ -35,7 +35,7 @@ Arsenyc is a fork of the tool Arsenal by Orange but with added support of Notion
 
 - Add alias for simplicity 
   ```
-  alias sync2notion="python3.13 -m arsenal --sync-obsidian --vault ~/Desktop/Perso/Obsidian"
+  alias sync2obsidian="python3.13 -m arsenal --sync-obsidian --vault ~/Desktop/Perso/Obsidian"
   ```
 
 ## Original Arsenal README
