@@ -1,10 +1,11 @@
-include LICENSE README.md requirements.txt run addalias.sh
-include *.py
-recursive-include arsenal/data/cheats *
-recursive-include img *
+include LICENSE
+include README.md
+include requirements.txt
+include run
+include addalias.sh
+recursive-include arsenal/data/cheats *!
 recursive-exclude .obsidian *
 recursive-exclude mindmap *
-recursive-exclude my_cheats *
+recursive-exclude my_cheats *.md
 recursive-exclude cheats/.obsidian *
 recursive-exclude arsenal.egg-info *
-

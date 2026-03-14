@@ -1,6 +1,83 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "arsenyc"
+version = "1.2.8"
+description = "Arsenyc - Arsenal fork with Notion and Obsidian synchronization for pentest command launching"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.8"
+license = {text = "GPL-3.0"}
+authors = [
+    {name = "Sp00kySkelet0n"},
+]
+maintainers = [
+    {name = "Sp00kySkelet0n"}
+]
+keywords = ["security", "pentesting", "cli", "tools", "tmux", "notion", "obsidian"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "requests>=2.0",
+    "libtmux>=0.24",
+    "docutils>=0.18",
+    "pyperclip>=1.8",
+    "PyYAML>=6.0",
+    "pyfzf>=0.3",
+    "aiohttp>=3.9",
+    "aiofiles>=23",
+    "mistletoe>=1.0",
+    "notion-client>=2.3",
+    "notion-to-md-py>=0.1.4",
+    "obsidiantools>=0.11.0",
+]
+
+[project.optional-dependencies]
+devel = [
+    "build",
+    "twine",
+    "pytest",
+    "pytest-cov",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "responses>=0.23",
+]
+
+[project.urls]
+Homepage = "https://github.com/Sp00kySkelet0n/Arsenyc"
+Documentation = "https://github.com/Sp00kySkelet0n/Arsenyc#readme"
+Repository = "https://github.com/Sp00kySkelet0n/Arsenyc.git"
+Changelog = "https://github.com/Sp00kySkelet0n/Arsenyc/releases"
+
+[project.scripts]
+arsenyc = "arsenal.app:main"
+
+[tool.setuptools.packages.find]
+include = ["arsenal*"]
+
+[tool.setuptools.package-data]
+"arsenal.data.cheats" = ["*.md", "*.rst"]
+"arsenal.modules" = ["*sync.py"]

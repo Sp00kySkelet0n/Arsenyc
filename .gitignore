@@ -13,3 +13,4 @@ dist/
 Pipfile.lock
 Pipfile
 .DS_Store
+arsenyc.egg-info/
